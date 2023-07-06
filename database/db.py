@@ -15,10 +15,23 @@ table_users_data = '''
     transactions_history TEXT
   )
 '''
+
 drop_table_users = '''
   DROP TABLE IF EXISTS users
 '''
+
+add_user = '''
+  INSERT INTO users (name, agency, account_number, pix_key, balance) 
+  VALUES (?, ?, ?, ?, ?)
+'''
+name = 'Thaymara'
+agency =  7667
+account_number = 8778
+pix_key = 9102
+balance = 50.00
+
 cursor.execute(table_users_data)
+cursor.execute(add_user, (name, agency, account_number, pix_key, balance))
 
 table_history_all_transactions_data = '''
   CREATE TABLE IF NOT EXISTS history_all_transactions(
