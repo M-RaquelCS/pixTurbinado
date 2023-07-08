@@ -37,7 +37,7 @@ def start_dns_server(server_socket, dns_table, F):
 
 
 def handle_dns_request(client_socket, dns_table, F):
-    data = client_socket.recv(F)
+    data = client_socket.recv(F) # link -> www.exemplo.com
     domain = data.decode().strip()
 
     if domain in dns_table:

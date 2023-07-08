@@ -31,7 +31,8 @@ def is_port_in_use(port):
 
 
 def handle_client_request(client_socket):
-    request = pickle.loads(client_socket.recv(2048))
+    request = client_socket.recv(2048)
+    print(request)
 
     if request_mold.match(request) and request.split('|')[0] == '1':
         mutex.acquire()  # Adquirir o mutex antes de acessar o servidor de dados

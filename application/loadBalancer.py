@@ -21,18 +21,19 @@ def load_balancer(connection_client_resquesting):
     edge_address = list_edge_servers_queue.pop(0)
     print(edge_address) 
 
-    request = connection_client_resquesting.recv(1024) # localhost:3000
-    print(request)
-
     try:
+        request = connection_client_resquesting.recv(1024) # localhost:3000
+        print(request)
+
         print("foi")
         sckt.connect(edge_address)
         sckt.send(request)
+        
     finally:
         print("foi part 2")
         sckt.close()
+        list_edge_servers_queue.append(edge_address)
     
-    list_edge_servers_queue.append(edge_address)
 
 while True:
     connection_client, address_client = balancer_socket.accept()

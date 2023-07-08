@@ -16,7 +16,7 @@ def get_address(domain):
     
 def send_balance(address, request):
   balancer_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-  balancer_socket.connect((address[0], address[1]))
+  balancer_socket.connect((address[0], int(address[1])))
   print("Conectado ao balancer")
 
   # array_decoder = pickle.dumps(address)
@@ -28,5 +28,16 @@ def send_balance(address, request):
 domain = input("Escreva seu domínio: ")
 address = get_address(domain)
 
-# 
-send_balance(address)
+# def send_balance(address):
+#   balancer_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+#   balancer_socket.connect((address[0], int(address[1])))
+#   print("Conectado ao balancer")
+
+#   array_decoder = pickle.dumps(address)
+#   balancer_socket.send(array_decoder)
+#   # response = balancer_socket.recv(F).decode()
+#   balancer_socket.close()
+#   # return response
+
+
+send_balance(address, 'login')
