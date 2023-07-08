@@ -1,54 +1,44 @@
 import socket
-import re
-from time import sleep
-import threading  # Importar o módulo threading para usar mutex
-import random
-import pickle
+import psutil
+import threading
 
-HOST = 'localhost'
-PORT = 5000
 F = 2048  # Tamanho fixo da mensagem em bytes
 
-edge_servers = [
-    ('localhost', 5000),
-    ('localhost', 5001),
-    ('localhost', 5002)
-]
+HOST_EDGE = 'localhost'
+PORT_EDGE = 5000
 
-request_mold = re.compile(r'^[1-9]\|[0-9]{1,8}\|[0-9]{1,3}\|[0-9]{1,8}\|[0-9]{1,11}$')
+MAX_EDGE_SERVERS = 3
 
-mutex = threading.Lock()  # Inicializar o mutex
+HOST_SERVER_APPLICATION = 'localhost'
+PORT_SERVER_APPLICATION = 3333
 
-sckt = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-sckt.bind((HOST, PORT))
-sckt.listen()
+def using_port(port):
+    for connection in psutil.net_connections():
+        if connection.laddr.port == port and connection.status == 'LISTEN':
+            return True
+    return False
 
-client_socket, _ = sckt.accept()
+def start_edge_server(port):
+    edge_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    edge_socket.bind((HOST_EDGE, port))
+    edge_socket.listen()
+    print(f'Edge iniciado em {HOST_EDGE}:{port}')
 
-resquest = client_socket.recv(F).decode()
-print(resquest)
+    while True:
+        client_connection, client_address = edge_socket.accept()
+        print("Cliente conectado ao edge da porta:", port)
+        handle_request(client_connection)
 
-# def is_port_in_use(port):
-#     try:
-#         test_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-#         test_socket.bind(('localhost', port))
-#         test_socket.close()
-#         return False
-#     except OSError:
-#         return True
-    
-# if is_port_in_use(PORT):
-#     PORT += 1
-#     application_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-#     application_server.bind((HOST, PORT))
-#     application_server.listen()
-# else:
-#     application_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-#     application_server.bind((HOST, PORT))
-#     application_server.listen()
+def handle_request(client_connection):
+    request = client_connection.recv(F).decode()
+    print(request)
 
-# print(f'Servidor iniciado em {HOST}:{PORT}')
+    server_application = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_application.connect((HOST_SERVER_APPLICATION, PORT_SERVER_APPLICATION))
+    server_application.send(request.encode())
+    server_application.close()
 
-# while True:
-#     client_socket, _ = sckt.accept()
-#     threading.Thread(target=handle_client_request, args=(client_socket,)).start()
+if __name__ == "__main__":
+    for port in range(PORT_EDGE, PORT_EDGE + MAX_EDGE_SERVERS):
+        if not using_port(port):
+            threading.Thread(target=start_edge_server, args=(port,)).start()

@@ -14,25 +14,25 @@ edge_servers = [
 list_edge_servers_queue = list(edge_servers) # cria uma cópia da lista e atribui nessa variável
 
 def load_balancer(connection_client_resquesting):
-    sckt = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
-
-    # dados da conexão com o socket edge
-    # pega os valores da primeira posição do array, o retirando do array
-    edge_address = list_edge_servers_queue.pop(0)
-    print(edge_address) 
+    edge_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
 
     try:
-        request = connection_client_resquesting.recv(1024) # localhost:3000
+        request = connection_client_resquesting.recv(1024) # recebendo a requisição
         print(request)
 
+        # dados da conexão com o socket edge
+        # pega os valores da primeira posição do array, o retirando do array
+        edge_address = list_edge_servers_queue.pop(0)
+        print(edge_address)
+
+        edge_socket.connect(edge_address)
+        edge_socket.send(request)
         print("foi")
-        sckt.connect(edge_address)
-        sckt.send(request)
         
     finally:
-        print("foi part 2")
-        sckt.close()
+        edge_socket.close()
         list_edge_servers_queue.append(edge_address)
+        print("foi part 2")
     
 
 while True:

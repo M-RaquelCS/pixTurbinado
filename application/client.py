@@ -18,11 +18,11 @@ def get_address(domain):
     
 def send_balance(address, request):
   balancer_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-  balancer_socket.connect((address[0], int(address[1])))
-  print("Conectado ao balancer")
+  balancer_socket.connect((address[0], int(address[1]))) # conexão com o IP e PORT recebido pelo DNS
+  print("Conectado ao Balanceador")
 
-  balancer_socket.send(request.encode())
-  response = balancer_socket.recv(F).decode()
+  balancer_socket.send(request.encode()) # envio da mensagem de resquisição (a primeira é um aviso de que o client está conectado)
+  response = balancer_socket.recv(F).decode() # recebo uma resposta vinda do balanceador sobre minha requisição
   balancer_socket.close()
   return response
 

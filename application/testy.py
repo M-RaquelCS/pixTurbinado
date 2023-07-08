@@ -6,6 +6,14 @@ process_id = str(os.getpid()).zfill(6) # intervalo de 0  a 999999
 message_connected = message_constructor.message(5, process_id, 0, 0, 0)
 print(message_connected)
 
+# def handle_request(client_connection):
+#     request = client_connection.recv(F).decode()
+#     print(request)
+
+    # server_application = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    # server_application.connect((HOST_SERVER_APPLICATION, PORT_SERVER_APPLICATION))
+    # server_application.send(request.encode())
+
 # def send_request_to_edge_server(edge_server, request):
 #     # Envie a solicitação para o servidor de Edge Computing selecionado
 #     try:
