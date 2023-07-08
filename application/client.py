@@ -1,7 +1,9 @@
 import socket
-import pickle
+import os
+import message_constructor
 
 F = 2048
+process_id = str(os.getpid()).zfill(6) # intervalo de 0  a 999999
 
 def get_address(domain):
   dns_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -19,25 +21,15 @@ def send_balance(address, request):
   balancer_socket.connect((address[0], int(address[1])))
   print("Conectado ao balancer")
 
-  # array_decoder = pickle.dumps(address)
   balancer_socket.send(request.encode())
   response = balancer_socket.recv(F).decode()
   balancer_socket.close()
   return response
 
 domain = input("Escreva seu domínio: ")
+
+# messagem para "avisar" que o client está conectado
+message_connected = message_constructor.message(5, process_id, 0, 0, 0)
 address = get_address(domain)
 
-# def send_balance(address):
-#   balancer_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-#   balancer_socket.connect((address[0], int(address[1])))
-#   print("Conectado ao balancer")
-
-#   array_decoder = pickle.dumps(address)
-#   balancer_socket.send(array_decoder)
-#   # response = balancer_socket.recv(F).decode()
-#   balancer_socket.close()
-#   # return response
-
-
-send_balance(address, 'login')
+send_balance(address, message_connected)
