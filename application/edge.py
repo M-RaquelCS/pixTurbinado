@@ -39,6 +39,6 @@ def handle_request(client_connection):
     server_application.close()
 
 if __name__ == "__main__":
-    for port in range(PORT_EDGE, PORT_EDGE + MAX_EDGE_SERVERS):
-        if not using_port(port):
-            threading.Thread(target=start_edge_server, args=(port,)).start()
+    for port in range(PORT_EDGE, PORT_EDGE + MAX_EDGE_SERVERS): # 5000 , 5000 + 3 = 5002
+        if not using_port(port): # False
+            threading.Thread(target=start_edge_server, args=(port,)).start() # 5000
