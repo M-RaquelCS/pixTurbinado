@@ -1,5 +1,5 @@
 import multiprocessing
-import subprocess
+import subprocess # para executar comandos do sistema operacional 
 
 def run_dns():
     dns = "python ./application/dns.py"
@@ -21,6 +21,8 @@ def run_client():
     client = "python ./application/cliente.py"
     subprocess.run(client, shell=True)
 
+# garante que o código dentro dele só será executado se o script for executado diretamente,
+# e não quando importado como um módulo.
 if __name__ == '__main__':
     process_dns = multiprocessing.Process(target=run_dns)
     process_dns.start()

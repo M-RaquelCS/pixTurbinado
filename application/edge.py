@@ -1,10 +1,10 @@
 import socket
-import psutil
-import threading
+import psutil #Biblioteca para interagir com o sistema operacional. nesse caso, para pegar o PID do processo.
+import threading #para lidar com múltiplas conexões em paralelo
 
 F = 2048  # Tamanho fixo da mensagem em bytes
 
-HOST_EDGE = 'localhost'
+HOST_EDGE = 'localhost' #
 PORT_EDGE = 5000
 
 MAX_EDGE_SERVERS = 3
@@ -43,7 +43,8 @@ def handle_request(client_connection):
     client_connection.send(response.encode())
 
     server_application.close()
-
+    
+#verifica se o script está sendo executado como um programa principal. 
 if __name__ == "__main__":
     for port in range(PORT_EDGE, PORT_EDGE + MAX_EDGE_SERVERS): # 5000 , 5000 + 3 = 5002
         if not using_port(port): # False

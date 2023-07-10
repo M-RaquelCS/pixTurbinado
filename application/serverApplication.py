@@ -15,7 +15,7 @@ PORT_SERVER_APPLICATION = 3333
 F = 27
 
 # fila de pedido
-request_queue = queue.Queue()
+request_queue = queue.Queue() #Criação de uma fila de pedidos usando queue.Queue(). A fila será usada para armazenar os pedidos recebidos dos edges.
 
 # sincronizar o acesso a fila de pedido
 mutex = threading.Lock()
@@ -179,6 +179,7 @@ def start_application_server():
 
 start_application_server()
 
+#tentativa de implementar uma conexão com os edges
 # # iniciar socket server application
 # server_application = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 # server_application.bind(('localhost', 3333))
