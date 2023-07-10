@@ -26,14 +26,6 @@ def write_file(text):
     with open('log.txt', 'a') as file:
         file.write(text)
 
-def read_file(id):
-    with open('log.txt', 'r') as file:
-        count = 0
-        for line in file:
-            if line.split()[0] == id:
-                count += 1
-        return (f'Account {id} was accessed {count} times')
-
 def login(request_message,client_socket):
     connectionDB = sqlite3.connect('E:\SD\pixTurbinado\database\db.db')
     cursor = connectionDB.cursor()
@@ -47,7 +39,7 @@ def login(request_message,client_socket):
     data_client = (agency, account_number)
     cursor.execute(command, data_client)
 
-    result = cursor.fetchall()
+    result = cursor.fetchall() # [[]]
     # print(result)
     if len(result) > 0:
         timestamp = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
@@ -77,7 +69,7 @@ def pix(request_message,client_socket):
     cursor.execute(command_verify_balance, (origin_transaction,))
 
     result = cursor.fetchall()
-    if len(result) > 0 and result[0][0] >= int(value_transaction):
+    if len(result) > 0 and result[0][0] >= int(value_transaction): # [[20]] -> 30
         command_update_balance_origin = 'UPDATE users SET balance = balance - ? WHERE account_number = ?'
         data_update_balance_origin = (value_transaction, origin_transaction)
 

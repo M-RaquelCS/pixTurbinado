@@ -39,3 +39,41 @@
 2023-07-10 08:10:49: 8778 transfers to 4554 - PID: 008552
 2023-07-10 08:10:49: 4554 received to 8778 - PID: 008552
 2023-07-10 08:10:49: Removed client - PID: 008552 | 008552
+2023-07-10 08:43:22: Client is connected - PID: 030008
+2023-07-10 08:43:22: Server recognized connection to client - PID: 030008
+2023-07-10 08:43:37: Client is connected - PID: 025056
+2023-07-10 08:43:37: Server recognized connection to client - PID: 025056
+2023-07-10 08:44:25: Client access account - PID: 030008
+2023-07-10 08:44:36: 4554 transfers to 2332 - PID: 030008
+2023-07-10 08:44:36: 2332 received to 4554 - PID: 030008
+2023-07-10 08:44:36: Removed client - PID: 030008 | 030008
+2023-07-10 08:45:13: Client access account - PID: 025056
+2023-07-10 08:45:22: 8778 transfers to 4554 - PID: 025056
+2023-07-10 08:45:22: 4554 received to 8778 - PID: 025056
+2023-07-10 08:45:22: Removed client - PID: 025056 | 025056
+2023-07-10 09:29:09: Client is connected - PID: 015376
+2023-07-10 09:29:09: Server recognized connection to client - PID: 015376
+2023-07-10 09:29:18: Client is connected - PID: 026900
+2023-07-10 09:29:18: Server recognized connection to client - PID: 026900
+2023-07-10 09:29:56: Client access account - PID: 015376
+2023-07-10 09:30:23: 2332 transfers to 4554 - PID: 015376
+2023-07-10 09:30:23: 4554 received to 2332 - PID: 015376
+2023-07-10 09:30:23: Removed client - PID: 015376 | 015376
+2023-07-10 09:30:42: Client access account - PID: 026900
+2023-07-10 09:30:51: 4554 transfers to 8778 - PID: 026900
+2023-07-10 09:30:51: 8778 received to 4554 - PID: 026900
+2023-07-10 09:30:51: Removed client - PID: 026900 | 026900
+2023-07-10 09:36:46: Client is connected - PID: 015896
+2023-07-10 09:36:46: Server recognized connection to client - PID: 015896
+2023-07-10 09:37:03: Client is connected - PID: 029552
+2023-07-10 09:37:03: Server recognized connection to client - PID: 029552
+2023-07-10 09:37:22: Client is connected - PID: 025592
+2023-07-10 09:37:22: Server recognized connection to client - PID: 025592
+2023-07-10 09:37:26: Client access account - PID: 025592
+2023-07-10 09:37:37: Client access account - PID: 029552
+2023-07-10 09:38:07: 2332 transfers to 4554 - PID: 025592
+2023-07-10 09:38:07: 4554 received to 2332 - PID: 025592
+2023-07-10 09:38:07: Removed client - PID: 025592 | 015896
+2023-07-10 09:38:10: 4554 transfers to 8778 - PID: 029552
+2023-07-10 09:38:10: 8778 received to 4554 - PID: 029552
+2023-07-10 09:38:10: Removed client - PID: 029552 | 029552
