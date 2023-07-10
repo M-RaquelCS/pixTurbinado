@@ -34,7 +34,9 @@ def load_balancer(connection_client_resquesting):
         list_edge_servers_queue.append(edge_address)
         print("foi part 2")
     
-
+# loop infinito para aceitar conexões Nesse loop, o balanceador fica aguardando por conexões de clientes 
+# usando accept(). Quando uma conexão é estabelecida, 
+# a função load_balancer() é chamada para processar a requisição do cliente.
 while True:
     connection_client, address_client = balancer_socket.accept()
     print("Conexão estabelecida com o cliente: ", address_client)
