@@ -36,6 +36,12 @@ def handle_request(client_connection):
     server_application = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_application.connect((HOST_SERVER_APPLICATION, PORT_SERVER_APPLICATION))
     server_application.send(request.encode())
+
+    response = server_application.recv(F).decode()
+    print(response)
+
+    client_connection.send(response.encode())
+
     server_application.close()
 
 if __name__ == "__main__":

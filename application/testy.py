@@ -1,10 +1,14 @@
-import os
-import message_constructor
+# import os
+# import message_constructor
+import sqlite3
 
-process_id = str(os.getpid()).zfill(6) # intervalo de 0  a 999999
+# process_id = str(os.getpid()).zfill(6) # intervalo de 0  a 999999
 
-message_connected = message_constructor.message(5, process_id, 0, 0, 0)
-print(message_connected)
+# message_connected = message_constructor.message(5, process_id, 0, 0, 0)
+# print(message_connected)
+
+connectionDB = sqlite3.connect('E:\SD\pixTurbinado\database\db.db')
+cursor = connectionDB.cursor()
 
 # def handle_request(client_connection):
 #     request = client_connection.recv(F).decode()

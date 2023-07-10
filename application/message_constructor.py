@@ -3,7 +3,10 @@
 # número 2 -> GRANT
 # número 3 -> OPERATION
 # número 4 -> RELEASE
+
 # número 5 -> CONNECTED
+
+# número 6 -> LOGIN
 
 F = 27 # tamanho fixo do tamanho da mensagem
 SEPARATOR = '|' # separador

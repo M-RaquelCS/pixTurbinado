@@ -1,0 +1,5 @@
+2023-07-10 03:54:40: Client is connected - PID: 030156
+2023-07-10 03:54:40: Server recognized connection to client - PID: 030156
+2023-07-10 03:54:50: Client access account - PID: 030156
+2023-07-10 03:55:02: 2332 transferes to 4554 - PID: 030156
+2023-07-10 03:55:02: 4554 received to 2332 - PID: 030156

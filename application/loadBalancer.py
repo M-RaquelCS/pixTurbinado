@@ -28,6 +28,12 @@ def load_balancer(connection_client_resquesting):
         edge_socket.connect(edge_address)
         edge_socket.send(request)
         print("foi")
+
+        response = edge_socket.recv(1024).decode()
+        print(response)
+
+        connection_client_resquesting.send(response.encode())
+
         
     finally:
         edge_socket.close()

@@ -7,9 +7,12 @@ import sqlite3
 import threading
 import queue
 import time
+import message_constructor
 
 HOST_SERVER_APPLICATION = 'localhost'
 PORT_SERVER_APPLICATION = 3333
+
+F = 27
 
 # fila de pedido
 request_queue = queue.Queue()
@@ -19,46 +22,128 @@ mutex = threading.Lock()
 
 request_count = {}
 
-def login():
-    connectionDB = sqlite3.connect('../database/db.db')
+def write_file(text):
+    with open('log.txt', 'a') as file:
+        file.write(text)
+
+def read_file(id):
+    with open('log.txt', 'r') as file:
+        count = 0
+        for line in file:
+            if line.split()[0] == id:
+                count += 1
+        return (f'Account {id} was accessed {count} times')
+
+def login(request_message,client_socket):
+    connectionDB = sqlite3.connect('E:\SD\pixTurbinado\database\db.db')
     cursor = connectionDB.cursor()
 
-    command = "SELECT * FROM users"
-    cursor.execute(command)
+    pid = request_message.split('|')[1]
+
+    agency = request_message.split('|')[2]
+    account_number = request_message.split('|')[3]
+
+    command = "SELECT * FROM users WHERE agency = ? AND account_number = ?"
+    data_client = (agency, account_number)
+    cursor.execute(command, data_client)
+
     result = cursor.fetchall()
-    print(result)
+    # print(result)
+    if len(result) > 0:
+        timestamp = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+        write_file(f'{timestamp}: Client access account - PID: {pid}\n')
+
+        with mutex:
+            request_count[pid] = request_count.get(pid, 0) + 1
+        
+        login_message = message_constructor.message(6, pid, agency, account_number, 0)
+        client_socket.send(login_message.encode())
+        
+    else:
+        no_login_message = message_constructor.message(6, pid, 0, 0, 0)
+        client_socket.send(no_login_message.encode())
+        client_socket.close()
+
+def pix(request_message,client_socket):
+    connectionDB = sqlite3.connect('E:\SD\pixTurbinado\database\db.db')
+    cursor = connectionDB.cursor()
+
+    pid = request_message.split('|')[1]
+    origin_transaction = request_message.split('|')[2]
+    destination_transaction = request_message.split('|')[3]
+    value_transaction = request_message.split('|')[4].lstrip('0')
+
+    command_verify_balance = 'SELECT balance FROM users WHERE account_number = ?'
+    cursor.execute(command_verify_balance, (origin_transaction,))
+
+    result = cursor.fetchall()
+    if len(result) > 0 and result[0][0] >= int(value_transaction):
+        command_update_balance_origin = 'UPDATE users SET balance = balance - ? WHERE account_number = ?'
+        data_update_balance_origin = (value_transaction, origin_transaction)
+
+        cursor.execute(command_update_balance_origin, data_update_balance_origin)
+        connectionDB.commit()
+
+        command_update_balance_destination = 'UPDATE users SET balance = balance + ? WHERE account_number = ?'
+        data_update_balance_destination = (value_transaction, destination_transaction)
+        
+        cursor.execute(command_update_balance_destination, data_update_balance_destination)
+        connectionDB.commit()
+
+        timestamp = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+        write_file(f'{timestamp}: {origin_transaction} transferes to {destination_transaction} - PID: {pid}\n')
+        write_file(f'{timestamp}: {destination_transaction} received to {origin_transaction} - PID: {pid}\n')
+        
+        with mutex:
+            request_count[pid] = request_count.get(pid, 0) + 1
+
+    else:
+        write_file(f'{timestamp}: {origin_transaction} failed to transfer to {destination_transaction} - PID: {pid}\n')
+
 
 def handle_connection(client_socket):
-    while True:
-        try:
-            request = client_socket.recv(1024).decode()
-            if not request:
-                break
+    request_message = client_socket.recv(F).decode() # 5|002780|0000|0000|00000000
 
-            timestamp = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
-            print(f'{timestamp}: Mensagem recebida - {request}')
+    if request_message.split('|')[0] == '5':
+        pid = request_message.split('|')[1]
 
-            with mutex:
-                request_queue.put(request)
-                process_id = request.split(',')[0]
-                request_count[process_id] = request_count.get(process_id, 0) + 1
+        timestamp = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+        write_file(f'{timestamp}: Client is connected - PID: {pid}\n')
 
-            # Simulação de processamento do pedido
-            time.sleep(1)
+        timestamp = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+        write_file(f'{timestamp}: Server recognized connection to client - PID: {pid}\n')
+        permission_message = message_constructor.message(6, pid, 0, 0, 0)
+        client_socket.send(permission_message.encode())
 
-            response = 'Pedido processado com sucesso'
-            client_socket.send(response.encode())
+        with mutex:
+            request_queue.put(request_message)
+            request_count[pid] = request_count.get(pid, 0) + 1
 
-            timestamp = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
-            print(f'{timestamp}: Mensagem enviada - {response}')
-        except:
-            break
+    elif request_message.split('|')[0] == '6':
+        login(request_message,client_socket)
+    
+    elif request_message.split('|')[0] == '3':
+        pix(request_message,client_socket)
 
-    client_socket.close()
+        # # Simulação de processamento do pedido
+        # time.sleep(1)
+
+        # login(request_message, client_socket)
+
+        # response = 'Pedido processado com sucesso'
+        # client_socket.send(response.encode())
+
+        # timestamp = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+        # write_file(f'{timestamp}: Mensagem enviada\n')
+
+    # client_socket.close()
 
 def handle_interface():
     while True:
-        command = input('Digite o comando (1 - Imprimir fila, 2 - Imprimir contagem, 3 - Encerrar): ')
+        command = input('Digite o comando' 
+                        '\n1 - Imprimir fila' 
+                        '\n2 - Imprimir contagem' '\n3 - Encerrar' 
+                        '\n-> ')
         if command == '1':
             with mutex:
                 print('Fila de Pedidos:')
@@ -80,7 +165,7 @@ def handle_interface():
 def start_application_server():
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.bind((HOST_SERVER_APPLICATION, PORT_SERVER_APPLICATION))
-    server_socket.listen(2)
+    server_socket.listen()
 
     print(f'Servidor de Aplicação iniciado em {HOST_SERVER_APPLICATION}:{PORT_SERVER_APPLICATION}')
 
