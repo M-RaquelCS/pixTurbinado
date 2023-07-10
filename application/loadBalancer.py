@@ -1,4 +1,5 @@
 import socket
+import threading
 
 balancer_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 balancer_socket.bind(('localhost', 3000))
@@ -47,4 +48,4 @@ while True:
     connection_client, address_client = balancer_socket.accept()
     print("Conexão estabelecida com o cliente: ", address_client)
 
-    load_balancer(connection_client)
+    threading.Thread(target=load_balancer, args=(connection_client,)).start()

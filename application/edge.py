@@ -27,7 +27,7 @@ def start_edge_server(port):
     while True:
         client_connection, client_address = edge_socket.accept()
         print("Cliente conectado ao edge da porta:", port)
-        handle_request(client_connection)
+        threading.Thread(target=handle_request, args=(client_connection,)).start()
 
 def handle_request(client_connection):
     request = client_connection.recv(F).decode()

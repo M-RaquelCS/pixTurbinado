@@ -66,5 +66,11 @@ if response:
           message_transaction = message_constructor.message(3, process_id, account_number, destiny_account, value_transaction)
           response = send_balance(address, message_transaction)
 
+          if response.split('|')[0] == '4' and response.split('|')[2] != '0000':
+            print("Operação feita com sucesso")
+
+          elif response.split('|')[0] == '4' and response.split('|')[2] == '0000':
+            print("Não foi possível enviar o pix, tente novamente mais tarde.")
+
 
 

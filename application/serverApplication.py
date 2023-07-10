@@ -91,14 +91,24 @@ def pix(request_message,client_socket):
         connectionDB.commit()
 
         timestamp = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
-        write_file(f'{timestamp}: {origin_transaction} transferes to {destination_transaction} - PID: {pid}\n')
+        write_file(f'{timestamp}: {origin_transaction} transfers to {destination_transaction} - PID: {pid}\n')
         write_file(f'{timestamp}: {destination_transaction} received to {origin_transaction} - PID: {pid}\n')
         
+        pix_message = message_constructor.message(4, pid, origin_transaction, 0, 0)
+        client_socket.send(pix_message.encode())
+
         with mutex:
             request_count[pid] = request_count.get(pid, 0) + 1
+            if not request_queue.empty():
+                item = request_queue.get(pid)
+                write_file(f'{timestamp}: Removed client - PID: {pid} | {item}\n')
 
     else:
         write_file(f'{timestamp}: {origin_transaction} failed to transfer to {destination_transaction} - PID: {pid}\n')
+        with mutex:
+            if not request_queue.empty():
+                item = request_queue.get(pid)
+                write_file(f'{timestamp}: Removed client - PID: {pid} | {item}\n')
 
 
 def handle_connection(client_socket):
@@ -116,7 +126,7 @@ def handle_connection(client_socket):
         client_socket.send(permission_message.encode())
 
         with mutex:
-            request_queue.put(request_message)
+            request_queue.put(pid)
             request_count[pid] = request_count.get(pid, 0) + 1
 
     elif request_message.split('|')[0] == '6':
